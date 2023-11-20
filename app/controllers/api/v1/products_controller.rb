@@ -13,16 +13,22 @@ module Api
       end
 
       def create
-        @product = Product.new(product_params)
+        product_type = ProductType.find_or_create_by(name: product_params[:product_type_name])
+        @product = Product.new(product_params.except(:product_type_name))
+        @product.product_type = product_type
+
         if @product.save
-          render json: @product, status: :created, location: @product
+          render json: @product, status: :created
         else
           render json: @product.errors, status: :unprocessable_entity
         end
       end
 
       def update
-        if @product.update(product_params)
+        product_type = ProductType.find_or_create_by(name: product_params[:product_type_name])
+        if @product.update(product_params.except(:product_type_name))
+          @product.product_type = product_type
+          @product.save
           render json: @product
         else
           render json: @product.errors, status: :unprocessable_entity
@@ -34,6 +40,21 @@ module Api
         head :no_content
       end
 
+      def match
+        length = params[:length].to_i
+        width = params[:width].to_i
+        height = params[:height].to_i
+        weight = params[:weight].to_i
+
+        @product = ProductMatcher.find_best_match(length: length, width: width, height: height, weight: weight)
+
+        if @product
+          render json: @product
+        else
+          render json: { error: 'No matching product found' }, status: :not_found
+        end
+      end
+
       private
 
       def product
@@ -43,7 +64,7 @@ module Api
       end
 
       def product_params
-        params.require(:product).permit(:name, :type, :length, :width, :height, :weight)
+        params.require(:product).permit(:name, :type, :length, :width, :height, :weight, :product_type_name)
       end
     end
   end

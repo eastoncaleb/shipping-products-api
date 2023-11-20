@@ -123,6 +123,16 @@ GEM
       concurrent-ruby (>= 1.0.5, < 2.0)
       mongo (>= 2.18.0, < 3.0.0)
       ruby2_keywords (~> 0.0.5)
+    mongoid-compatibility (0.6.0)
+      activesupport
+      mongoid (>= 2.0)
+    mongoid-rspec (4.1.0)
+      activesupport (>= 3.0.0)
+      mongoid (>= 3.1)
+      mongoid-compatibility (>= 0.5.1)
+      rspec-core (~> 3.3)
+      rspec-expectations (~> 3.3)
+      rspec-mocks (~> 3.3)
     msgpack (1.7.2)
     mutex_m (0.2.0)
     net-imap (0.4.5)
@@ -208,6 +218,8 @@ GEM
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
     ruby2_keywords (0.0.5)
+    shoulda-matchers (5.3.0)
+      activesupport (>= 5.2.0)
     sqlite3 (1.6.8-aarch64-linux)
     sqlite3 (1.6.8-arm64-darwin)
     sqlite3 (1.6.8-x86_64-linux)
@@ -232,10 +244,12 @@ DEPENDENCIES
   debug
   factory_bot_rails
   mongoid (~> 8.0)
+  mongoid-rspec
   puma (>= 5.0)
   rack-cors
   rails (~> 7.1.2)
   rspec-rails
+  shoulda-matchers
   sqlite3 (~> 1.4)
   tzinfo-data
 

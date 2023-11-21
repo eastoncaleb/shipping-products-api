@@ -13,9 +13,13 @@ module Api
       end
 
       def create
-        product_type = ProductType.find_or_create_by(name: product_params[:product_type_name])
-        @product = Product.new(product_params.except(:product_type_name))
-        @product.product_type = product_type
+        product_type_id = product_params[:product_type_id]
+
+        if product_type_id.present? && !ProductType.exists?(product_type_id)
+          return render json: { error: 'Invalid or missing product type' }, status: :unprocessable_entity
+        end
+
+        @product = Product.new(product_params)
 
         if @product.save
           render json: @product, status: :created
@@ -25,10 +29,11 @@ module Api
       end
 
       def update
-        product_type = ProductType.find_or_create_by(name: product_params[:product_type_name])
-        if @product.update(product_params.except(:product_type_name))
-          @product.product_type = product_type
-          @product.save
+        product_type = ProductType.find_by(id: product_params[:product_type_id])
+        @product.assign_attributes(product_params.except(:product_type_id))
+        @product.product_type = product_type if product_type
+
+        if @product.save
           render json: @product
         else
           render json: @product.errors, status: :unprocessable_entity
@@ -36,17 +41,28 @@ module Api
       end
 
       def destroy
-        @product.destroy
-        head :no_content
+        if @product.destroy
+          head :no_content
+        else
+          render json: { error: 'Product could not be deleted' }, status: :unprocessable_entity
+        end
       end
 
       def match
-        length = params[:length].to_i
-        width = params[:width].to_i
-        height = params[:height].to_i
-        weight = params[:weight].to_i
+        required_params = %i[length width height weight]
+        missing_params = required_params.select { |param| params[param].blank? }
 
-        @product = ProductMatcher.find_best_match(length: length, width: width, height: height, weight: weight)
+        unless missing_params.empty?
+          error_message = "Missing required parameters: #{missing_params.join(', ')}"
+          return render json: { error: error_message }, status: :unprocessable_entity
+        end
+
+        @product = ProductMatcher.find_best_match(
+          length: params[:length].to_i,
+          width: params[:width].to_i,
+          height: params[:height].to_i,
+          weight: params[:weight].to_i
+        )
 
         if @product
           render json: @product
@@ -64,7 +80,7 @@ module Api
       end
 
       def product_params
-        params.require(:product).permit(:name, :type, :length, :width, :height, :weight, :product_type_name)
+        params.permit(:name, :type, :length, :width, :height, :weight, :product_type_id)
       end
     end
   end

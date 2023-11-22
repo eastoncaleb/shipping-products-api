@@ -63,6 +63,9 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
   config.include Mongoid::Matchers, type: :model
+  config.after(:each) do
+    Faker::UniqueGenerator.clear
+  end
 end
 Shoulda::Matchers.configure do |config|
   config.integrate do |with|

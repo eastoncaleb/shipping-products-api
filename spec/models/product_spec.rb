@@ -29,20 +29,21 @@ RSpec.describe Product, type: :model do
   end
 
   describe 'associations' do
-    it 'belongs to product_type' do
-      product_type = ProductType.create(name: 'Example Type')
-      product = Product.new(name: 'Example Product', length: 10, width: 10, height: 10, weight: 10, product_type: product_type)
+    let!(:product_type) { ProductType.create(name: 'Example Type') }
+    let!(:product) { Product.new(name: 'Example Product', length: 10, width: 10, height: 10, weight: 10, product_type: product_type) }
 
+    it 'belongs to product_type' do
       expect(product.product_type).to eq(product_type)
     end
   end
 
   describe 'uniqueness validation' do
     let!(:product_type) { ProductType.find_or_create_by(name: 'Example Type') }
+    let!(:duplicate_product) { Product.new(name: 'UniqueName', length: 2, width: 2, height: 2, weight: 2, product_type: product_type) }
+
+    before { Product.create(name: 'UniqueName', length: 1, width: 1, height: 1, weight: 1, product_type: product_type)}
 
     it 'does not allow duplicate names' do
-      Product.create(name: 'UniqueName', length: 1, width: 1, height: 1, weight: 1, product_type: product_type)
-      duplicate_product = Product.new(name: 'UniqueName', length: 2, width: 2, height: 2, weight: 2, product_type: product_type)
       expect(duplicate_product.valid?).to be false
       expect(duplicate_product.errors[:name]).to include('has already been taken')
     end

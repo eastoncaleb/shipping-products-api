@@ -39,9 +39,9 @@ RSpec.describe Product, type: :model do
 
   describe 'uniqueness validation' do
     let!(:product_type) { ProductType.find_or_create_by(name: 'Example Type') }
-    before { Product.create!(name: 'UniqueName', length: 1, width: 1, height: 1, weight: 1, product_type: product_type) }
 
     it 'does not allow duplicate names' do
+      Product.create(name: 'UniqueName', length: 1, width: 1, height: 1, weight: 1, product_type: product_type)
       duplicate_product = Product.new(name: 'UniqueName', length: 2, width: 2, height: 2, weight: 2, product_type: product_type)
       expect(duplicate_product.valid?).to be false
       expect(duplicate_product.errors[:name]).to include('has already been taken')

@@ -20,24 +20,23 @@ This Rails application serves as a backend API for managing shipping products. I
 
 ## Local Setup
 
-1. From your terminal, clone the repository from Github e.g. `git clone <repository-url>`
-2. Navigate into the repository e.g. `cd shipping_products_api`
+**From your terminal, perform the following:**
+1. Clone the repository from Github e.g. `git clone <repository-url>`
+2. Navigate into the repository folder e.g. `cd shipping_products_api`
 3. Run `bundle install`
-4. Create your database: `rails db:create db:migrate`
+4. Create your database: `rails db:create`
 5. Import data from your local products file: `rake db:import_products`
 
 ## Getting Started
 
 Start your server: Run `rails server` in your terminal from within your project folder. The API will be available at `http://localhost:3000`.
 
-## Using the API
+## API Endpoints
 
-** API Endpoints **
+### CREATE
+POST `/api/v1/products`
 
-** CREATE **
-POST `/api/v1/products`: Create a new product.
-
-** Example request body: **
+**Example request body:**
 
 ```
 {
@@ -50,18 +49,18 @@ POST `/api/v1/products`: Create a new product.
 }
 ```
 
-** READ **
-GET `/api/v1/products`: Retrieve all products.
+### READ
+GET `/api/v1/products`: Retrieve all products
 GET `/api/v1/products/match?length=x&width=y&height=z&weight=w`: Find the best matching product for given dimensions.
 
-** Example request: **
+**Example request:**
 
-`GET /api/v1/products/match?length=48&width=14&height=12&weight=42`
+GET `/api/v1/products/match?length=48&width=14&height=12&weight=42`
 
-** UPDATE **
-PATCH `/api/v1/products/:id`: Update a product.
+### UPDATE
+PATCH `/api/v1/products/:id`
 
-** Example request body for updating product with id: **
+**Example request body for updating product with id:**
 
 ```
 {
@@ -69,8 +68,10 @@ PATCH `/api/v1/products/:id`: Update a product.
 }
 ```
 
-** DESTROY **
-DELETE `/api/v1/products/:id`: Delete a product.
+### DESTROY
+
+**Example request:**
+DELETE `/api/v1/products/:id`
 
 ## Running Tests
 

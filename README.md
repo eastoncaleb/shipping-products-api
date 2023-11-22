@@ -49,9 +49,11 @@ POST `/api/v1/products`
 }
 ```
 
-### READ
-GET `/api/v1/products`: Retrieve all products
-GET `/api/v1/products/match?length=x&width=y&height=z&weight=w`: Find the best matching product for given dimensions.
+### READ (all products)
+GET `/api/v1/products`
+
+### READ (find the matching product for given dimensions)
+GET `/api/v1/products/match?length=x&width=y&height=z&weight=w`
 
 **Example request:**
 

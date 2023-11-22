@@ -29,9 +29,12 @@ module Api
       end
 
       def update
-        product_type = ProductType.find_by(id: product_params[:product_type_id])
+        if product_params[:product_type_id].present?
+          product_type = ProductType.find_by(id: product_params[:product_type_id])
+          @product.product_type = product_type if product_type
+        end
+
         @product.assign_attributes(product_params.except(:product_type_id))
-        @product.product_type = product_type if product_type
 
         if @product.save
           render json: @product
@@ -39,6 +42,7 @@ module Api
           render json: @product.errors, status: :unprocessable_entity
         end
       end
+
 
       def destroy
         if @product.destroy

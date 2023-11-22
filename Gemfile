@@ -44,6 +44,7 @@ group :development, :test do
   gem "factory_bot_rails"
   gem 'shoulda-matchers'
   gem 'mongoid-rspec'
+  gem 'faker'
 end
 
 group :development do
